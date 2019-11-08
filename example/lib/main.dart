@@ -39,10 +39,10 @@ class _MyAppState extends State<MyApp> {
     'api'
   ];
 
-  AuthorizationServiceConfiguration _serviceConfiguration =
-      AuthorizationServiceConfiguration(
-          'https://demo.identityserver.io/connect/authorize',
-          'https://demo.identityserver.io/connect/token');
+  ServiceConfiguration _serviceConfiguration = ServiceConfiguration(
+      'https://demo.identityserver.io/connect/authorize',
+      'https://demo.identityserver.io/connect/token',
+      'https://demo.identityserver.io/connect/endsession');
 
   @override
   void initState() {
@@ -166,6 +166,34 @@ class _MyAppState extends State<MyApp> {
               ),
               Text('test api results'),
               Text(_userInfo),
+              RaisedButton(
+                child: Text("Sign Out"),
+                onPressed: () async {
+                  //setBusyState();
+                  var result = await _appAuth.endSession(
+                    EndSessionRequest(
+                      _issuer,
+                      _idTokenTextController.text,
+                      _discoveryUrl,
+                      _redirectUrl,
+                      _serviceConfiguration,
+                    ),
+                  );
+
+                  if (result != null) {
+                    _accessToken = '';
+                    _refreshToken = '';
+                    await _testApi(null);
+                  }
+                },
+              ),
+              RaisedButton(
+                child: Text('Call API'),
+                onPressed: () async {
+                  setBusyState();
+                  await _testApi(null);
+                },
+              ),
             ],
           ),
         ),
