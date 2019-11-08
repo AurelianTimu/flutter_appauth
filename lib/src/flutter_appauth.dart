@@ -4,6 +4,8 @@ import 'authorization_request.dart';
 import 'authorization_response.dart';
 import 'authorization_token_request.dart';
 import 'authorization_token_response.dart';
+import 'end_session_request.dart';
+import 'end_session_response.dart';
 import 'token_request.dart';
 import 'token_response.dart';
 
@@ -57,5 +59,14 @@ class FlutterAppAuth {
         result['idToken'],
         result['tokenType'],
         result['tokenAdditionalParameters']?.cast<String, String>());
+  }
+
+  /// For logging out
+  Future<EndSessionResponse> endSession(EndSessionRequest request) async {
+    var result = await _channel.invokeMethod('endSession', request.toMap());
+    return EndSessionResponse(
+      result['state'],
+      result['endSessionAdditionalParameters']?.cast<String, dynamic>(),
+    );
   }
 }
